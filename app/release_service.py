@@ -44,5 +44,9 @@ class ReleaseStore:
     def list(self) -> List[dict]:
         return [
             asdict(r)
-            for r in sorted(self._items.values(), key=lambda x: x.created_at, reverse=True)
-        ]
+            for r in sorted(self._items.values(), 
+                            key=lambda x: x.created_at,
+                            reverse=True)] 
+    
+    def get(self, rid: str):
+        return self._items.get(rid)

@@ -33,4 +33,17 @@ def test_live():
 def test_ready():
     r = client.get("/ready")
     assert r.status_code == 200
-    assert r.json()["status"] == "ready"    
+    assert r.json()["status"] == "ready"
+
+
+def test_metrics():
+    client.post("/release", json={"service": "api", "version": "1.0.0"})
+
+    r = client.get("/metrics")
+    assert r.status_code == 200
+    assert "text/plain" in r.headers["content-type"]
+
+    body = r.text
+    assert "release_requests_total" in body
+    assert 'service="api"' in body
+    assert "release_duration_seconds" in body

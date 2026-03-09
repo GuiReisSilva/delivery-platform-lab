@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import time
 
+import logging
 import structlog
 from fastapi import FastAPI
 from fastapi.responses import Response
@@ -13,6 +14,12 @@ from app.observability import (
     release_requests_total,
 )
 from app.release_service import ReleaseStore
+
+logging.basicConfig(level=logging.INFO)
+
+structlog.configure(
+    wrapper_class=structlog.make_filtering_bound_logger(logging.INFO),
+)
 
 logger = structlog.get_logger()
 
@@ -82,8 +89,15 @@ def create_release(payload: ReleaseRequest):
     return {"release_id": rel.id, "status": "done"}
 
 
+@app.get("/release/{rid}")
+def get_release(rid: str):
+    rel = store.get(rid)
+    if not rel:
+        return {"error": "release not found"}
+    return rel
+
+
 @app.get("/metrics")
 def metrics():
     body, content_type = metrics_payload()
     return Response(content=body, media_type=content_type)
-
