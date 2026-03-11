@@ -16,7 +16,10 @@ from app.observability import (
 from app.release_service import ReleaseStore
 
 from starlette.middleware.base import BaseHTTPMiddleware
-from app.observability import http_requests_total, http_request_duration_seconds
+from app.observability import (
+    http_requests_total,
+    http_request_duration_seconds,
+)
 
 logging.basicConfig(level=logging.INFO)
 
@@ -134,7 +137,10 @@ def metrics():
 
 @app.get("/error")
 def error():
-    raise HTTPException(status_code=500, detail="Simulated Internal Server Error")
+    raise HTTPException(
+        status_code=500,
+        detail="Simulated Internal Server Error"
+    )
 
 
 @app.get("/slow")
