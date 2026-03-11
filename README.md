@@ -36,3 +36,6 @@ docker compose up --build
 ## Dashboards automáticos
 
 Foi criado Dashboards automaticamente usando Grafana provisioning, cada gráfico coletado o JSON na interface gráfica.
+
+
+[![CI](https://github.com/GuiReisSilva/delivery-platform-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/GuiReisSilva/delivery-platform-lab/actions)
