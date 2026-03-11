@@ -1,10 +1,6 @@
 from __future__ import annotations
 
-from prometheus_client import (
-    CONTENT_TYPE_LATEST,
-    Counter, Histogram,
-    generate_latest
-)
+from prometheus_client import CONTENT_TYPE_LATEST, Counter, Histogram, generate_latest
 
 release_requests_total = Counter(
     "release_requests_total",

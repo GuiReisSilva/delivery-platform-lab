@@ -1,25 +1,22 @@
 from __future__ import annotations
 
+import logging
 import time
 
-import logging
 import structlog
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import Response
 from pydantic import BaseModel, Field
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.observability import (
+    http_request_duration_seconds,
+    http_requests_total,
     metrics_payload,
     release_duration_seconds,
     release_requests_total,
 )
 from app.release_service import ReleaseStore
-
-from starlette.middleware.base import BaseHTTPMiddleware
-from app.observability import (
-    http_requests_total,
-    http_request_duration_seconds,
-)
 
 logging.basicConfig(level=logging.INFO)
 
