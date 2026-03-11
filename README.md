@@ -37,5 +37,14 @@ docker compose up --build
 
 Foi criado Dashboards automaticamente usando Grafana provisioning, cada gráfico coletado o JSON na interface gráfica.
 
+## Observability
+
+O projeto implementa RED metrics:
+
+- Rate (taxa de requisições)
+- Errors (taxa de erros)
+- Duration (latência)
+
+
 
 [![CI](https://github.com/GuiReisSilva/delivery-platform-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/GuiReisSilva/delivery-platform-lab/actions)
