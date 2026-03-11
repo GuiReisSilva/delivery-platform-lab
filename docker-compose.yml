@@ -5,17 +5,20 @@ services:
       - "8000:8000"
 
   prometheus:
-      image: prom/prometheus:latest
-      ports:
-        - "9090:9090"
-      volumes:
-        - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      depends_on:
-        - api
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - api
 
   grafana:
-      image: grafana/grafana:latest
-      ports:
-        - "3000:3000"
-      depends_on:
-        - prometheus
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      - prometheus

@@ -4,7 +4,7 @@ import time
 
 import logging
 import structlog
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import Response
 from pydantic import BaseModel, Field
 
@@ -14,6 +14,9 @@ from app.observability import (
     release_requests_total,
 )
 from app.release_service import ReleaseStore
+
+from starlette.middleware.base import BaseHTTPMiddleware
+from app.observability import http_requests_total, http_request_duration_seconds
 
 logging.basicConfig(level=logging.INFO)
 
@@ -25,6 +28,32 @@ logger = structlog.get_logger()
 
 app = FastAPI(title="Delivery Platform Lab", version="0.1.0")
 store = ReleaseStore()
+
+
+class MetricsMiddleware(BaseHTTPMiddleware):
+
+    async def dispatch(self, request, call_next):
+
+        method = request.method
+        path = request.url.path
+
+        with http_request_duration_seconds.labels(
+            method=method,
+            path=path
+        ).time():
+
+            response = await call_next(request)
+
+        http_requests_total.labels(
+            method=method,
+            path=path,
+            status=str(response.status_code),
+        ).inc()
+
+        return response
+
+
+app.add_middleware(MetricsMiddleware)
 
 
 class ReleaseRequest(BaseModel):
@@ -93,7 +122,7 @@ def create_release(payload: ReleaseRequest):
 def get_release(rid: str):
     rel = store.get(rid)
     if not rel:
-        return {"error": "release not found"}
+        raise HTTPException(status_code=404, detail="release not found")
     return rel
 
 
@@ -101,3 +130,14 @@ def get_release(rid: str):
 def metrics():
     body, content_type = metrics_payload()
     return Response(content=body, media_type=content_type)
+
+
+@app.get("/error")
+def error():
+    raise HTTPException(status_code=500, detail="Simulated Internal Server Error")
+
+
+@app.get("/slow")
+def slow():
+    time.sleep(10)
+    return {"status": "slow"}

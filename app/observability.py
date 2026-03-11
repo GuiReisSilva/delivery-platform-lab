@@ -14,6 +14,18 @@ release_duration_seconds = Histogram(
     ["service"],
 )
 
+http_requests_total = Counter(
+    "http_requests_total",
+    "Total HTTP requests",
+    ["path", "method", "status"],
+)
+
+http_request_duration_seconds = Histogram(
+    "http_request_duration_seconds",
+    "HTTP request latency",
+    ["path", "method"],
+)
+
 
 def metrics_payload() -> tuple[bytes, str]:
     body = generate_latest()

@@ -32,3 +32,7 @@ docker compose up --build
 /release
 /releases
 /metrics
+
+## Dashboards automáticos
+
+Foi criado Dashboards automaticamente usando Grafana provisioning, cada gráfico coletado o JSON na interface gráfica.
